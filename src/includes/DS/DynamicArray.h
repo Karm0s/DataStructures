@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <algorithm>
 
 template <typename T>
 class DynamicArray
@@ -10,13 +11,19 @@ private:
 	T* m_Array;
 
 public:
-	DynamicArray(const std::size_t size = 10)
+	DynamicArray(const std::size_t size = 10):
+		m_Size(size),
+		m_Array(m_Size? new T[m_Size] : nullptr)
+	{}
+
+	DynamicArray(const DynamicArray& other):
+		m_Size(other.m_Size),
+		m_Array(m_Size? new T[m_Size] : nullptr)
 	{
-		m_Size = size;
-		m_Array = new T[m_Size];
+		std::copy(other.m_Array, other.m_Array + m_Size, this->m_Array);
 	}
 
-	T& operator[](int index)
+	T& operator[](size_t index)
 	{
 		if (index >= m_Size)
 			throw std::out_of_range("Index out of bound!");
