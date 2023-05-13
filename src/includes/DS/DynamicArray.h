@@ -23,11 +23,25 @@ public:
 		std::copy(other.m_Array, other.m_Array + m_Size, this->m_Array);
 	}
 
+
+	DynamicArray& operator=(DynamicArray other)
+	{
+		swap(*this, other);
+		return *this;
+	}
+
 	T& operator[](size_t index)
 	{
 		if (index >= m_Size)
 			throw std::out_of_range("Index out of bound!");
 		return m_Array[index];
+	}
+
+	friend void swap(DynamicArray& first, DynamicArray& second)
+	{
+		using std::swap;
+		swap(first.m_Size, second.m_Size);
+		swap(first.m_Array, second.m_Array);
 	}
 
 	~DynamicArray()
