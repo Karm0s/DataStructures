@@ -23,6 +23,12 @@ public:
 		std::copy(other.m_Array, other.m_Array + m_Size, this->m_Array);
 	}
 
+	DynamicArray(std::initializer_list<T> elements) :
+		m_Size(elements.size()),
+		m_Array(m_Size ? new T[m_Size] : nullptr)
+	{
+		std::copy(elements.begin(), elements.end(), m_Array);
+	}
 
 	DynamicArray& operator=(DynamicArray other)
 	{
