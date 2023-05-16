@@ -9,12 +9,13 @@ template <typename T>
 class DynamicArray
 {
 private:
-	std::size_t m_Size; // Used for allocation
-	std::size_t m_UsedCapacity; // track used amount
 	T* m_Array;
 
+	std::size_t m_Size; // Used for allocation
+	std::size_t m_UsedCapacity; // track used amount
 	
 	void reallocate(); 
+	inline void validateIndex(size_t index) const;
 
 public:
 	DynamicArray();
@@ -32,6 +33,9 @@ public:
 
 	T& operator[](size_t index);
 
+	T& at(size_t index);
+	const T& at(size_t index) const;
+
 	friend void swap(DynamicArray& first, DynamicArray& second);
 };
 
@@ -47,6 +51,13 @@ void DynamicArray<T>::reallocate()
 	m_Size = newSize;
 
 	delete[] tempArray;
+}
+
+template<typename T>
+inline void DynamicArray<T>::validateIndex(size_t index) const
+{
+	if (index > m_Size)
+		throw std::out_of_range("index out of bound.");
 }
 
 template<typename T>
@@ -126,6 +137,20 @@ DynamicArray<T>& DynamicArray<T>::operator=(DynamicArray<T> other)
 template<typename T>
 T& DynamicArray<T>::operator[](size_t index)
 {
+	return m_Array[index];
+}
+
+template<typename T>
+T& DynamicArray<T>::at(size_t index)
+{
+	validateIndex(index);
+	return m_Array[index];
+}
+
+template<typename T>
+const T& DynamicArray<T>::at(size_t index) const
+{
+	validateIndex(index);
 	return m_Array[index];
 }
 
