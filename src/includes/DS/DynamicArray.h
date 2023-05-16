@@ -28,7 +28,7 @@ public:
 	~DynamicArray();
 
 	void push_back(const T& element);
-	//void push_back(T&& element);
+	void push_back(T&& element);
 
 	T& operator[](size_t index);
 
@@ -105,10 +105,16 @@ void DynamicArray<T>::push_back(const T& element)
 	m_Array[m_UsedCapacity] = element;
 	m_UsedCapacity++;
 }
-//
-//template<typename T>
-//void DynamicArray<T>::push_back(T&& element)
-//{}
+
+template<typename T>
+void DynamicArray<T>::push_back(T&& element)
+{
+	if (m_UsedCapacity >= m_Size)
+		reallocate();
+
+	m_Array[m_UsedCapacity] = std::move(element);
+	m_UsedCapacity++;
+}
 
 template<typename T>
 DynamicArray<T>& DynamicArray<T>::operator=(DynamicArray<T> other)
@@ -120,8 +126,6 @@ DynamicArray<T>& DynamicArray<T>::operator=(DynamicArray<T> other)
 template<typename T>
 T& DynamicArray<T>::operator[](size_t index)
 {
-	if (index >= m_Size)
-		throw std::out_of_range("Index out of bound!");
 	return m_Array[index];
 }
 
