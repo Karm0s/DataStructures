@@ -9,8 +9,12 @@ template <typename T>
 class DynamicArray
 {
 private:
-	std::size_t m_Size;
+	std::size_t m_Size; // Used for allocation
+	std::size_t m_UsedCapacity; // track used amount
 	T* m_Array;
+
+	
+	void reallocate(); 
 
 public:
 	DynamicArray();
@@ -23,26 +27,46 @@ public:
 
 	~DynamicArray();
 
+	void push_back(const T& element);
+	//void push_back(T&& element);
+
 	T& operator[](size_t index);
 
 	friend void swap(DynamicArray& first, DynamicArray& second);
 };
 
 template<typename T>
+void DynamicArray<T>::reallocate()
+{
+	std::size_t newSize = m_Size * 2;
+	T* tempArray = new T[newSize];
+	
+	std::copy(m_Array, m_Array + m_Size, tempArray);
+
+	std::swap(tempArray, m_Array);
+	m_Size = newSize;
+
+	delete[] tempArray;
+}
+
+template<typename T>
 DynamicArray<T>::DynamicArray()
 	:m_Size(MIN_SIZE),
+	m_UsedCapacity(0),
 	m_Array(new T[m_Size])
 {}
 
 template<typename T>
 DynamicArray<T>::DynamicArray(const std::size_t size)
 	:m_Size(size ? size : MIN_SIZE),
+	m_UsedCapacity(0),
 	m_Array(new T[m_Size])
 {}
 
 template<typename T>
 DynamicArray<T>::DynamicArray(const DynamicArray<T>& other)
 	: m_Size(other.m_Size),
+	m_UsedCapacity(other.m_UsedCapacity),
 	m_Array(new T[m_Size])
 {
 	std::copy(other.m_Array, other.m_Array + m_Size, this->m_Array);
@@ -51,6 +75,7 @@ DynamicArray<T>::DynamicArray(const DynamicArray<T>& other)
 template<typename T>
 DynamicArray<T>::DynamicArray(DynamicArray&& other) noexcept
 	:m_Size(other.m_Size),
+	m_UsedCapacity(other.m_UsedCapacity),
 	m_Array(other.m_Array)
 {
 	other.m_Array = nullptr;
@@ -59,6 +84,7 @@ DynamicArray<T>::DynamicArray(DynamicArray&& other) noexcept
 template<typename T>
 DynamicArray<T>::DynamicArray(std::initializer_list<T> elements) :
 	m_Size(elements.size()),
+	m_UsedCapacity(m_Size),
 	m_Array(m_Size ? new T[m_Size] : nullptr)
 {
 	std::copy(elements.begin(), elements.end(), m_Array);
@@ -69,6 +95,20 @@ DynamicArray<T>::~DynamicArray()
 {
 	delete[] m_Array;
 }
+
+template<typename T>
+void DynamicArray<T>::push_back(const T& element)
+{
+	if (m_UsedCapacity >= m_Size)
+		reallocate();
+
+	m_Array[m_UsedCapacity] = element;
+	m_UsedCapacity++;
+}
+//
+//template<typename T>
+//void DynamicArray<T>::push_back(T&& element)
+//{}
 
 template<typename T>
 DynamicArray<T>& DynamicArray<T>::operator=(DynamicArray<T> other)
