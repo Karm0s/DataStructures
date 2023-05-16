@@ -13,8 +13,10 @@ private:
 	T* m_Array;
 
 public:
+	DynamicArray();
 	DynamicArray(const std::size_t size);
 	DynamicArray(const DynamicArray& other);
+	DynamicArray(DynamicArray&& other) noexcept;
 	DynamicArray(std::initializer_list<T> elements);
 
 	DynamicArray& operator=(DynamicArray other);
@@ -25,6 +27,12 @@ public:
 
 	friend void swap(DynamicArray& first, DynamicArray& second);
 };
+
+template<typename T>
+DynamicArray<T>::DynamicArray()
+	:m_Size(MIN_SIZE),
+	m_Array(new T[m_Size])
+{}
 
 template<typename T>
 DynamicArray<T>::DynamicArray(const std::size_t size)
@@ -39,7 +47,15 @@ DynamicArray<T>::DynamicArray(const DynamicArray<T>& other)
 {
 	std::copy(other.m_Array, other.m_Array + m_Size, this->m_Array);
 }
- 
+
+template<typename T>
+DynamicArray<T>::DynamicArray(DynamicArray&& other) noexcept
+	:m_Size(other.m_Size),
+	m_Array(other.m_Array)
+{
+	other.m_Array = nullptr;
+}
+
 template<typename T>
 DynamicArray<T>::DynamicArray(std::initializer_list<T> elements) :
 	m_Size(elements.size()),
