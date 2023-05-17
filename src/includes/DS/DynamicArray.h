@@ -4,17 +4,19 @@
 #include <algorithm>
 
 #define MIN_SIZE 2
+#define SHRINK_RATIO 2.5
 
 template <typename T>
 class DynamicArray
 {
 private:
 
-	std::size_t m_Size; // Used for allocation
-	std::size_t m_UsedCapacity; // track used amount
+	std::size_t m_Size;
+	std::size_t m_UsedCapacity;
+
 	T* m_Array;
 	
-	void reallocate(); 
+	void reallocate(size_t newSize);
 	inline void validateIndex(size_t index) const;
 
 public:
@@ -33,6 +35,8 @@ public:
 	void push_back(const std::initializer_list<T>& elements);
 	void push_back(std::initializer_list<T>&& elements);
 
+	void pop_back();
+
 	T& operator[](size_t index);
 
 	T& at(size_t index);
@@ -41,13 +45,13 @@ public:
 	friend void swap(DynamicArray& first, DynamicArray& second);
 };
 
+
 template<typename T>
-void DynamicArray<T>::reallocate()
+inline void DynamicArray<T>::reallocate(size_t newSize)
 {
-	std::size_t newSize = m_Size * 2;
 	T* tempArray = new T[newSize];
 	
-	std::copy(m_Array, m_Array + m_Size, tempArray);
+	std::copy(m_Array, m_Array + std::min(newSize, m_Size), tempArray);
 
 	std::swap(tempArray, m_Array);
 	m_Size = newSize;
@@ -123,19 +127,19 @@ template<typename T>
 void DynamicArray<T>::push_back(T&& element)
 {
 	if (m_UsedCapacity >= m_Size)
-		reallocate();
+		reallocate(m_Size * 2);
 
 	m_Array[m_UsedCapacity] = std::move(element);
 	m_UsedCapacity++;
 }
 
 template<typename T>
-inline void DynamicArray<T>::push_back(const std::initializer_list<T>& elements)
+void DynamicArray<T>::push_back(const std::initializer_list<T>& elements)
 {
 	for (auto e : elements)
 	{
 		if (m_UsedCapacity >= m_Size)
-			reallocate();
+			reallocate(m_Size * 2);
 
 		m_Array[m_UsedCapacity] = e;
 		m_UsedCapacity++;
@@ -148,11 +152,20 @@ void DynamicArray<T>::push_back(std::initializer_list<T>&& elements)
 	for (auto e : elements)
 	{
 		if (m_UsedCapacity >= m_Size)
-			reallocate();
+			reallocate(m_Size * 2);
 
 		m_Array[m_UsedCapacity] = std::move(e);
 		m_UsedCapacity++;
 	}
+}
+
+template<typename T>
+void DynamicArray<T>::pop_back()
+{
+	m_UsedCapacity--;
+	float ratio = m_Size / m_UsedCapacity;
+	if (ratio > SHRINK_RATIO)
+		reallocate(m_Size / 2);
 }
 
 template<typename T>
