@@ -9,10 +9,10 @@ template <typename T>
 class DynamicArray
 {
 private:
-	T* m_Array;
 
 	std::size_t m_Size; // Used for allocation
 	std::size_t m_UsedCapacity; // track used amount
+	T* m_Array;
 	
 	void reallocate(); 
 	inline void validateIndex(size_t index) const;
@@ -30,6 +30,8 @@ public:
 
 	void push_back(const T& element);
 	void push_back(T&& element);
+	void push_back(const std::initializer_list<T>& elements);
+	void push_back(std::initializer_list<T>&& elements);
 
 	T& operator[](size_t index);
 
@@ -94,9 +96,9 @@ DynamicArray<T>::DynamicArray(DynamicArray&& other) noexcept
 
 template<typename T>
 DynamicArray<T>::DynamicArray(std::initializer_list<T> elements) :
-	m_Size(elements.size()),
+	m_Size(elements.size() ? elements.size() : MIN_SIZE),
 	m_UsedCapacity(m_Size),
-	m_Array(m_Size ? new T[m_Size] : nullptr)
+	m_Array(new T[m_Size])
 {
 	std::copy(elements.begin(), elements.end(), m_Array);
 }
@@ -125,6 +127,32 @@ void DynamicArray<T>::push_back(T&& element)
 
 	m_Array[m_UsedCapacity] = std::move(element);
 	m_UsedCapacity++;
+}
+
+template<typename T>
+inline void DynamicArray<T>::push_back(const std::initializer_list<T>& elements)
+{
+	for (auto e : elements)
+	{
+		if (m_UsedCapacity >= m_Size)
+			reallocate();
+
+		m_Array[m_UsedCapacity] = e;
+		m_UsedCapacity++;
+	}
+}
+
+template<typename T>
+void DynamicArray<T>::push_back(std::initializer_list<T>&& elements)
+{
+	for (auto e : elements)
+	{
+		if (m_UsedCapacity >= m_Size)
+			reallocate();
+
+		m_Array[m_UsedCapacity] = std::move(e);
+		m_UsedCapacity++;
+	}
 }
 
 template<typename T>
