@@ -30,6 +30,11 @@ public:
 
 	~DynamicArray();
 
+	T& front();
+	T& back();
+	const T& front() const;
+	const T& back() const;
+
 	void push_back(const T& element);
 	void push_back(T&& element);
 	void push_back(const std::initializer_list<T>& elements);
@@ -112,6 +117,30 @@ template<typename T>
 DynamicArray<T>::~DynamicArray()
 {
 	delete[] m_Array;
+}
+
+template<typename T>
+T& DynamicArray<T>::front()
+{
+	return m_Array[0];
+}
+
+template<typename T>
+T& DynamicArray<T>::back()
+{
+	return m_Array[m_Size - 1];
+}
+
+template<typename T>
+const T& DynamicArray<T>::front() const
+{
+	return m_Array[0];
+}
+
+template<typename T>
+const T& DynamicArray<T>::back() const
+{
+	return m_Array[m_Size - 1];
 }
 
 template<typename T>
@@ -213,7 +242,6 @@ void swap(DynamicArray<T>& first, DynamicArray<T>& second)
 
 /*
 To Do:
-the const stuff
 Iterator
 Front and back methods
 */
