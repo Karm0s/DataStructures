@@ -38,6 +38,7 @@ public:
 	void pop_back();
 
 	T& operator[](size_t index);
+	const T& operator[](size_t index) const;
 
 	T& at(size_t index);
 	const T& at(size_t index) const;
@@ -182,6 +183,12 @@ T& DynamicArray<T>::operator[](size_t index)
 }
 
 template<typename T>
+const T& DynamicArray<T>::operator[](size_t index) const
+{
+	return m_Array[index];
+}
+
+template<typename T>
 T& DynamicArray<T>::at(size_t index)
 {
 	validateIndex(index);
@@ -202,3 +209,11 @@ void swap(DynamicArray<T>& first, DynamicArray<T>& second)
 	swap(first.m_Size, second.m_Size);
 	swap(first.m_Array, second.m_Array);
 }
+
+
+/*
+To Do:
+the const stuff
+Iterator
+Front and back methods
+*/
