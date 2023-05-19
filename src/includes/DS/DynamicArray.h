@@ -35,6 +35,9 @@ public:
 	const T& front() const;
 	const T& back() const;
 
+	T* begin();
+	T* end();
+
 	void push_back(const T& element);
 	void push_back(T&& element);
 	void push_back(const std::initializer_list<T>& elements);
@@ -141,6 +144,18 @@ template<typename T>
 const T& DynamicArray<T>::back() const
 {
 	return m_Array[m_Size - 1];
+}
+
+template<typename T>
+T* DynamicArray<T>::begin()
+{
+	return m_Array;
+}
+
+template<typename T>
+T* DynamicArray<T>::end()
+{
+	return m_Array + m_Size;
 }
 
 template<typename T>
