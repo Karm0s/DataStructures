@@ -18,23 +18,22 @@ public:
 		using value_type         = T;
 		using pointer            = Iterator::value_type*;
 		using reference          = Iterator::value_type&;
+		/*using const_pointer      = const Iterator::value_type*;
+		using const_reference    = const Iterator::value_type&;*/
 
 		Iterator(pointer ptr);
 
 		reference operator*();
 		pointer operator->();
 
+		//const_reference operator*() const;
+		//const_pointer operator->() const;
+
 		Iterator& operator++();
 		Iterator operator++(int);
 
-		friend bool operator==(const DynamicArray<T>::Iterator& first, const DynamicArray<T>::Iterator& second)
-		{
-			return (first.m_Pointer == second.m_Pointer);
-		}
-		friend bool operator!=(const DynamicArray<T>::Iterator& first, const DynamicArray<T>::Iterator& second)
-		{
-			return (first.m_Pointer != second.m_Pointer);
-		}
+		bool operator==(const DynamicArray<T>::Iterator& other) const;
+		bool operator!=(const DynamicArray<T>::Iterator& other) const;
 	
 	private:
 		pointer m_Pointer;
@@ -56,6 +55,9 @@ public:
 
 	Iterator begin();
 	Iterator end();
+
+	const Iterator begin() const;
+	const Iterator end() const;
 
 	void push_back(const T& element);
 	void push_back(T&& element);
@@ -114,6 +116,18 @@ typename DynamicArray<T>::Iterator DynamicArray<T>::Iterator::operator++(int)
 	Iterator copy = *this;
 	++(*this);
 	return copy;
+}
+
+template<typename T>
+bool DynamicArray<T>::Iterator::operator==(const DynamicArray<T>::Iterator& other) const
+{
+	return (m_Pointer == other.m_Pointer);
+}
+
+template<typename T>
+bool DynamicArray<T>::Iterator::operator!=(const DynamicArray<T>::Iterator& other) const
+{
+	return (m_Pointer != other.m_Pointer);
 }
 
 template<typename T>
@@ -220,6 +234,18 @@ DynamicArray<T>::Iterator DynamicArray<T>::end()
 }
 
 template<typename T>
+const typename DynamicArray<T>::Iterator DynamicArray<T>::begin() const
+{
+	return DynamicArray<T>::Iterator(m_Array);
+}
+
+template<typename T>
+const typename DynamicArray<T>::Iterator DynamicArray<T>::end() const
+{
+	return DynamicArray<T>::Iterator(m_Array + m_UsedCapacity);
+}
+
+template<typename T>
 void DynamicArray<T>::push_back(const T& element)
 {
 	if (m_UsedCapacity >= m_Size)
@@ -306,18 +332,6 @@ const T& DynamicArray<T>::at(size_t index) const
 	validateIndex(index);
 	return m_Array[index];
 }
-
-//template<typename T>
-//bool operator==(const typename DynamicArray<T>::Iterator& first, const typename DynamicArray<T>::Iterator& second)
-//{
-//	return first.m_Pointer == second.m_Pointer;
-//}
-//
-//template<typename T>
-//bool operator!=(const typename DynamicArray<T>::Iterator& first, const typename DynamicArray<T>::Iterator& second)
-//{
-//	return !(first.m_Pointer == second.m_Pointer);
-//}
 
 template<typename T>
 void swap(DynamicArray<T>& first, DynamicArray<T>& second)
