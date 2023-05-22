@@ -13,27 +13,26 @@ public:
 	class Iterator
 	{
 	public:
-		using interator_category = std::forward_iterator_tag;
-		using difference_type    = std::ptrdiff_t;
-		using value_type         = T;
-		using pointer            = Iterator::value_type*;
-		using reference          = Iterator::value_type&;
-		/*using const_pointer      = const Iterator::value_type*;
-		using const_reference    = const Iterator::value_type&;*/
+		using interator_category	=	std::forward_iterator_tag;
+		using difference_type		=	std::ptrdiff_t;
+		using value_type			=	T;
+		using pointer				=	Iterator::value_type*;
+		using reference				=	Iterator::value_type&;
+		using const_pointer			=	const Iterator::value_type*;
+		using const_reference		=	const Iterator::value_type&;
 
-		Iterator(pointer ptr);
+		Iterator(pointer ptr) :m_Pointer(ptr)							{}
 
-		reference operator*();
-		pointer operator->();
+		reference operator*()											{return *m_Pointer;}
+		pointer operator->()											{return m_Pointer;}
+		const_reference operator*() const								{return *m_Pointer;}
+		const_pointer operator->() const								{return m_Pointer;}
 
-		//const_reference operator*() const;
-		//const_pointer operator->() const;
+		Iterator& operator++()											{m_Pointer++; return *this;}
+		Iterator operator++(int)										{ Iterator copy = *this; ++(*this); return copy; }
 
-		Iterator& operator++();
-		Iterator operator++(int);
-
-		bool operator==(const DynamicArray<T>::Iterator& other) const;
-		bool operator!=(const DynamicArray<T>::Iterator& other) const;
+		bool operator==(const DynamicArray<T>::Iterator& other) const	{return (m_Pointer == other.m_Pointer);}
+		bool operator!=(const DynamicArray<T>::Iterator& other) const	{return (m_Pointer != other.m_Pointer);}
 	
 	private:
 		pointer m_Pointer;
@@ -86,49 +85,49 @@ private:
 };
 
 
-template<typename T>
-DynamicArray<T>::Iterator::Iterator(pointer ptr)
-	:m_Pointer(ptr)
-{}
+//template<typename T>
+//DynamicArray<T>::Iterator::Iterator(pointer ptr)
+//	:m_Pointer(ptr)
+//{}
 
-template<typename T>
-DynamicArray<T>::Iterator::reference DynamicArray<T>::Iterator::operator*()
-{
-	return *m_Pointer;
-}
+//template<typename T>
+//DynamicArray<T>::Iterator::reference DynamicArray<T>::Iterator::operator*()
+//{
+//	return *m_Pointer;
+//}
 
-template<typename T>
-DynamicArray<T>::Iterator::pointer DynamicArray<T>::Iterator::operator->()
-{
-	return m_Pointer;
-}
+//template<typename T>
+//DynamicArray<T>::Iterator::pointer DynamicArray<T>::Iterator::operator->()
+//{
+//	return m_Pointer;
+//}
 
-template<typename T>
-typename DynamicArray<T>::Iterator& DynamicArray<T>::Iterator::operator++()
-{
-	m_Pointer++;
-	return *this;
-}
+//template<typename T>
+//typename DynamicArray<T>::Iterator& DynamicArray<T>::Iterator::operator++()
+//{
+//	m_Pointer++;
+//	return *this;
+//}
+//
+//template<typename T>
+//typename DynamicArray<T>::Iterator DynamicArray<T>::Iterator::operator++(int)
+//{
+//	Iterator copy = *this;
+//	++(*this);
+//	return copy;
+//}
 
-template<typename T>
-typename DynamicArray<T>::Iterator DynamicArray<T>::Iterator::operator++(int)
-{
-	Iterator copy = *this;
-	++(*this);
-	return copy;
-}
+//template<typename T>
+//bool DynamicArray<T>::Iterator::operator==(const DynamicArray<T>::Iterator& other) const
+//{
+//	return (m_Pointer == other.m_Pointer);
+//}
 
-template<typename T>
-bool DynamicArray<T>::Iterator::operator==(const DynamicArray<T>::Iterator& other) const
-{
-	return (m_Pointer == other.m_Pointer);
-}
-
-template<typename T>
-bool DynamicArray<T>::Iterator::operator!=(const DynamicArray<T>::Iterator& other) const
-{
-	return (m_Pointer != other.m_Pointer);
-}
+//template<typename T>
+//bool DynamicArray<T>::Iterator::operator!=(const DynamicArray<T>::Iterator& other) const
+//{
+//	return (m_Pointer != other.m_Pointer);
+//}
 
 template<typename T>
 inline void DynamicArray<T>::reallocate(size_t newSize)
