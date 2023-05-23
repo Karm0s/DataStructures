@@ -19,7 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\includes\DS\DynamicArray.h" />
+    <ClInclude Include="src\includes\DS\dynamic_array.h" />
+    <ClInclude Include="src\includes\DS\iterators.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
